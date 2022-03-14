@@ -27,8 +27,29 @@ public class PessoaServiceImpl implements PessoaService {
 
 	public Optional<PessoaEntity> buscarPorId(Long id) {
 		log.info("Buscando pessoa pelo ID {}", id);
-		PessoaEntity resposta = this.pessoaRepository.getById(id);
-		return Optional.ofNullable(resposta);
+		PessoaEntity pessoa = this.pessoaRepository.getById(id);
+		var validaScore = pessoa.getScore();
+		var scoreDescricao = "";
+		System.out.println("Score descrição " + validaScore);
+		if ((validaScore >= 0) && (validaScore <= 200)) {
+
+			scoreDescricao = "Insuficiente";
+
+		} else if ((validaScore >= 201) && (validaScore <= 500)) {
+
+			scoreDescricao = "Inaceitável";
+
+		} else if ((validaScore >= 501) && (validaScore <= 700)) {
+
+			scoreDescricao = "Aceitável";
+
+		} else {
+
+			scoreDescricao = "Recomendável";
+
+		}
+
+		return Optional.ofNullable(pessoa);
 	}
 
 	public List<PessoaEntity> findAll() {

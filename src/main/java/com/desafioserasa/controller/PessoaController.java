@@ -22,8 +22,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.desafioserasa.dtos.PessoaDto;
+import com.desafioserasa.dtos.ScoreDto;
+import com.desafioserasa.dtos.TodosPessoaDto;
 import com.desafioserasa.entity.PessoaEntity;
+import com.desafioserasa.entity.ScoreEntity;
 import com.desafioserasa.repository.PessoaRepository;
+import com.desafioserasa.repository.ScoreRepository;
 import com.desafioserasa.response.Response;
 import com.desafioserasa.service.PessoaService;
 
@@ -38,13 +42,17 @@ public class PessoaController {
 
 	@Autowired
 	private final PessoaRepository pessoaRepository;
+	
+	@Autowired
+	private final ScoreRepository scoreRepository;
 
 	@Value("${paginacao.qtd_por_pagina}")
 	private int qtdPorPagina;
 
-	public PessoaController(PessoaService pessoaService, PessoaRepository pessoaRepository) {
+	public PessoaController(PessoaService pessoaService, PessoaRepository pessoaRepository, ScoreRepository scoreRepository) {
 		this.pessoaService = pessoaService;
 		this.pessoaRepository = pessoaRepository;
+		this.scoreRepository = scoreRepository;
 
 	}
 
@@ -85,30 +93,30 @@ public class PessoaController {
 	public ResponseEntity<Response<PessoaDto>> buscarPorId(@PathVariable("id") Long id) {
 		log.info("Buscando pessoa por id: {}", id);
 		Response<PessoaDto> response = new Response<PessoaDto>();
-		Optional<PessoaEntity> pessoa = pessoaService.buscarPorId(id);
-		System.out.println("pessoa" + pessoa);
+		Response<ScoreDto> respScore = new Response<ScoreDto>();
+		
+ 		Optional<PessoaEntity> pessoa = pessoaService.buscarPorId(id);
 
 		if (!pessoa.isPresent()) {
 			log.info("Pessoa não encontrada para o Id: {}", id);
 			response.getErrors().add("Pessoa não encontrada para o Id " + id);
-			return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-			
 		}
 
-		response.setData(this.converterCadastroPessoaDto(pessoa.get()));
+		response.setData(this.converterPessoaIdDto(pessoa.get()));
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping(value = "/pessoa")
-	public ResponseEntity<Response<List<PessoaDto>>> findAll() {
+	public ResponseEntity<Response<List<TodosPessoaDto>>> findAll() {
 
 		List<PessoaEntity> pessoas = pessoaRepository.findAll();
-		Response<List<PessoaDto>> response = new Response<List<PessoaDto>>();
-		var pessoasDTO = pessoas.stream().map(this::converterCadastroPessoaDto).collect(Collectors.toList());
-		response.setData(pessoasDTO);
+		Response<List<TodosPessoaDto>> todosResponse = new Response<List<TodosPessoaDto>>();
+		var todosPessoasDTO = pessoas.stream().map(this::converterTodosPessoaDto).collect(Collectors.toList());
+		todosResponse.setData(todosPessoasDTO);
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(todosResponse);
 	}
 
 	/**
@@ -122,6 +130,7 @@ public class PessoaController {
 	private PessoaEntity converterDtoParaPessoaEntity(PessoaDto cadastroPessoaDto, BindingResult result)
 			throws NoSuchAlgorithmException {
 		PessoaEntity pessoa = new PessoaEntity();
+		pessoa.setId(cadastroPessoaDto.getId());
 		pessoa.setNome(cadastroPessoaDto.getNome());
 		pessoa.setTelefone(cadastroPessoaDto.getTelefone());
 		pessoa.setIdade(cadastroPessoaDto.getIdade());
@@ -140,23 +149,32 @@ public class PessoaController {
 	 */
 	private PessoaDto converterCadastroPessoaDto(PessoaEntity pessoaEntity) {
 		PessoaDto cadastroPessoaDto = new PessoaDto();
-		cadastroPessoaDto.setId(pessoaEntity.getId());
 		cadastroPessoaDto.setNome(pessoaEntity.getNome());
 		cadastroPessoaDto.setTelefone(pessoaEntity.getTelefone());
 		cadastroPessoaDto.setIdade(pessoaEntity.getIdade());
-		cadastroPessoaDto.setCidade(pessoaEntity.getCidade());
-		cadastroPessoaDto.setEstado(pessoaEntity.getEstado());
 		cadastroPessoaDto.setScore(pessoaEntity.getScore());
 
 		return cadastroPessoaDto;
 	}
 
 	private PessoaDto converterPessoaIdDto(PessoaEntity pessoaEntity) {
-		PessoaDto cadastroPessoaDto = new PessoaDto();
-		cadastroPessoaDto.setId(pessoaEntity.getId());
+		PessoaDto consultaPessoaDto = new PessoaDto();
+		consultaPessoaDto.setId(pessoaEntity.getId());
+		consultaPessoaDto.setNome(pessoaEntity.getNome());
+		consultaPessoaDto.setTelefone(pessoaEntity.getTelefone());
+		consultaPessoaDto.setIdade(pessoaEntity.getIdade());
+		consultaPessoaDto.setCidade(pessoaEntity.getCidade());
+		consultaPessoaDto.setEstado(pessoaEntity.getEstado());
+		
+		
+		//consultaPessoaDto.setScore(pessoaEntity.getScore());
+
+		return consultaPessoaDto;
+	}
+
+	private TodosPessoaDto converterTodosPessoaDto(PessoaEntity pessoaEntity) {
+		TodosPessoaDto cadastroPessoaDto = new TodosPessoaDto();
 		cadastroPessoaDto.setNome(pessoaEntity.getNome());
-		cadastroPessoaDto.setTelefone(pessoaEntity.getTelefone());
-		cadastroPessoaDto.setIdade(pessoaEntity.getIdade());
 		cadastroPessoaDto.setCidade(pessoaEntity.getCidade());
 		cadastroPessoaDto.setEstado(pessoaEntity.getEstado());
 		cadastroPessoaDto.setScore(pessoaEntity.getScore());
@@ -164,4 +182,5 @@ public class PessoaController {
 		return cadastroPessoaDto;
 	}
 
+		
 }

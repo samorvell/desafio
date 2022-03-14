@@ -1,14 +1,12 @@
 package com.desafioserasa.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity(name = "pessoa")
 public class PessoaEntity implements Serializable {
@@ -29,7 +27,7 @@ public class PessoaEntity implements Serializable {
 	@Column(nullable = false)
 	private String estado;
 	@Column(nullable = false)
-	private BigDecimal score;
+	private Integer score;
 
 	public Long getId() {
 		return id;
@@ -79,11 +77,11 @@ public class PessoaEntity implements Serializable {
 		this.estado = estado;
 	}
 
-	public BigDecimal getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(BigDecimal score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 

@@ -3,51 +3,30 @@ package com.desafioserasa.dtos;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class PessoaDto {
+public class TodosPessoaDto {
 
-	private Long id;
 	@NotEmpty(message = "Nome não pode ser vazio.")
 	@Size(min = 3, max = 200, message = "Nome deve conter entre 3 e 200 caracteres.")
 	private String nome;
-	
 	@NotEmpty(message = "Telefone não pode ser vazio.")
 	@Size(min = 3, max = 14, message = "Telefone formato 99 99999-9999.")
-	private String telefone;
-	
-	@Size(min = 1, max = 2, message = "Idade 99.")
-	private Integer idade;
-	
-	@Size(min = 2, max = 30, message = "Nome da Cidade.")
 	private String cidade;
-	
 	@Size(min = 2, max = 2, message = "Unidade federativa XX.")
 	private String estado;
-	
 	@Size(min = 1, max = 4, message = "Score de 0 a 1000.")
 	private Integer score;
 
-	public PessoaDto(Long id, String nome, String telefone, Integer idade, String cidade, String estado,
-			@Size(min = 1, max = 4, message = "Score de 0 a 1000.") Integer score) {
+	public TodosPessoaDto(String nome, String cidade, String estado, @Size(min = 1, max = 4, message = "Score de 0 a 1000.") Integer score) {
 		super();
-		this.id = id;
+
 		this.nome = nome;
-		this.telefone = telefone;
-		this.idade = idade;
 		this.cidade = cidade;
 		this.estado = estado;
 		this.score = score;
 	}
 
-	public PessoaDto() {
+	public TodosPessoaDto() {
 
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getNome() {
@@ -56,22 +35,6 @@ public class PessoaDto {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public Integer getIdade() {
-		return idade;
-	}
-
-	public void setIdade(Integer idade) {
-		this.idade = idade;
 	}
 
 	public String getCidade() {
@@ -94,14 +57,14 @@ public class PessoaDto {
 		return score;
 	}
 
-	public void setScore(Integer score) {
-		this.score = score;
+	public void setScore(Integer integer) {
+		this.score = integer;
 	}
 
 	@Override
 	public String toString() {
-		return "CadastroPessoaDto [id=" + id + ", nome=" + nome + ", telefone=" + telefone + ", idade=" + idade
-				+ ", cidade=" + cidade + ", estado=" + estado + ", score=" + score + "]";
+		return "CadastroPessoaDto [ " + "nome=" + nome + ", " + ", cidade=" + cidade + ", estado=" + estado + ", score="
+				+ score + "]";
 	}
 
 }
